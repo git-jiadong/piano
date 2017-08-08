@@ -17,18 +17,37 @@ bool wait4touch(int fd, struct touch *ptouch)
 	struct input_event buf;	
 	bzero(&buf, sizeof(buf));
 
-	read(fd, &buf, sizeof(buf));
-	if(buf.type == EV_ABS)
+	int flag = 0;
+	while(1)
 	{
-		if(buf.code == ABS_X)
-			ptouch->x = buf.value;
-		if(buf.code == ABS_Y)
-			ptouch->y = buf.value;
-	}
+		read(fd, &buf, sizeof(buf));
+		if(buf.type == EV_ABS)
+		{
+			if(buf.code == ABS_X)
+			{
+				ptouch->x = buf.value;
+				flag |= 1;
+				printf("flag: %d\n", flag);
+			}
+			if(buf.code == ABS_Y)
+			{
+				ptouch->y = buf.value;
+				flag |= 2;
+				printf("flag: %d\n", flag);
+			}
+		}
 
-	if(buf.type == EV_KEY)
-	{
-		if(buf.code == BTN_TOUCH)
-			ptouch->status = buf.value;
+		if(buf.type == EV_KEY)
+		{
+			if(buf.code == BTN_TOUCH)
+			{
+				ptouch->status = buf.value;
+				flag |= 4;
+				printf("flag: %d\n", flag);
+			}
+		}
+
+		if(flag == 7)
+			break;
 	}
 }
