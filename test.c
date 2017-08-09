@@ -45,7 +45,7 @@ int main(void)
 	//	printf("s: %s\n", buf.status == 0? "LEAVE": "PRESS");
 		if(buf.x>10 && buf.x<790 && buf.y>50 && buf.y<280)
 		{
-			now_x = (buf.x-20)/65*65+10;
+			now_x = (buf.x-10)/65*65+10;
 			if(buf.status == LEAVE || last_x != now_x)
 			{
 				write_lcd(lcd, &vinfo, leave, &iminfo, last_x, 50);
@@ -55,7 +55,7 @@ int main(void)
 			if(buf.status == PRESS && flag == 1)
 			{
 
-				last_x = (buf.x-20)/65*65+10; 
+				last_x = (buf.x-10)/65*65+10; 
 				write_lcd(lcd, &vinfo, press, &iminfo, last_x, 50);
 				sem_post(&play);
 				flag = 0;
@@ -90,7 +90,7 @@ void *madplay(void *arg)
 	while(1)
 	{
 		sem_wait(&play);
-		int num = (pbuf->x - 20)/65;
+		int num = (pbuf->x - 10)/65;
 	
 		char cmd[45];
 		snprintf(cmd, 45, "./audio/bin/madplay mp3/d%d.mp3 -a -15 &", num+1);
